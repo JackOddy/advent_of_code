@@ -1,12 +1,19 @@
-previous_value = 0
+current_values = [0, 0, 0]
+previous_total = 0
 count = 0
 
-File.foreach("data") do |line|
-  value = line&.to_i
+data = File.foreach("data") do |line|
+  value = line.to_i
+  current_values.rotate!
+  current_values[-1] = value
 
-  count += 1 if value > previous_value
-  previous_value = value
+
+  total = current_values.sum
+
+  count += 1 if total > previous_total
+
+  previous_total = total
 end
 
 
-puts count - 1
+puts count - 3
