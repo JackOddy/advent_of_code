@@ -26,42 +26,37 @@ end.map(&:join).map { |n| n.to_i(2) }.reduce(:*)
 
 puts power_consumptions
 
-# data1 = File.open('data').readlines.map(&:chomp).map { |l| l.split("") }
-# data2 = File.open('data').readlines.map(&:chomp).map { |l| l.split("") }
+# part 2
+
+def split_list(list, bit_position)
+  sorted = list.sort { |a, b| a[bit_position].to_i <=> b[bit_position].to_i }
+  first_1 = sorted.find_index { |bit| bit[bit_position] == "1" }
+
+  zeros = sorted.slice!(0...first_1) # removes zeroes from array
+  ones = sorted
+
+  return zeros, ones
+end
+
+def find_system_value(list, system, bit_position=0)
+  return list.first if list.length == 1
+
+    zeros, ones = split_list(list, bit_position)
+
+    if system == :o2
+      next_list = ones.length < zeros.length ? zeros : ones
+    end
+
+    if system == :co2
+      next_list = zeros.length > ones.length ? ones : zeros
+    end
+
+    find_system_value(next_list, system, bit_position + 1)
+end
+
+data = File.open('data').readlines.map(&:chomp).map { |l| l.split("") }
+
+puts find_system_value(data, :co2).join.to_i(2) * find_system_value(data, :o2).join.to_i(2)
 
 
-# def find_binary_number_1(numbers, i = 0)
-#   return numbers.first.join if numbers.length == 1
-#   return numbers if i == 12
-
-#   zeros, ones = sort_numbers(numbers, i)
-
-#   next_list = ones.length >= zeros.length ? ones : zeros
-
-#   find_binary_number_1(next_list, i + 1)
-# end
-
-# def find_binary_number_2(numbers, i = 0)
-#   return numbers.first.join if numbers.length == 1
-#   return numbers if i == 12
-
-#   zeros, ones = sort_numbers(numbers, i)
-
-#   next_list = zeros.length >= ones.length ? zeros : ones
-
-#   find_binary_number_2(next_list, i + 1)
-# end
-
-# def sort_numbers(list, i, ones=[], zeros=[])
-#   item = list.pop
-
-#   return zeros, ones if item.nil?
-
-#   ones << item if item[i] == "1"
-#   zeros << item if item[i] == "0"
-
-#   sort_numbers(list, i, ones, zeros)
-# end
-
-# puts find_binary_number_1(data1).to_i(2) * find_binary_number_2(data2).to_i(2)
 
